@@ -1,9 +1,11 @@
-name: Deploy Statistics Site to GitHub Pages
-
+# Simple workflow for deploying static content to GitHub Pages
+name: Deploy static content to Pages
 on:
+
   push:
-    branches:
-      - main  # Change to 'master' if your default branch is master
+    branches: ["main"]
+
+
   workflow_dispatch:
 
 permissions:
@@ -16,39 +18,24 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      # Uncomment and configure the step below if you need to build/compile your stats site
-      # - name: Setup Node.js / Python / R
-      #   uses: actions/setup-node@v4 # or setup-python, setup-r, etc.
-      #   with:
-        #   node-version: '20'
-      # - name: Install dependencies and build
-      #   run: |
-      #     npm ci
-      #     npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # Path to your built static files or root directory (e.g., './public', './dist', or '.')
-          path: '.'
-
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: release
-    needs: build
     runs-on: ubuntu-latest
+
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Upload entire repository
+          path: './'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
